@@ -1,3 +1,7 @@
+"""
+Manager
+"""
+
+
 if __name__ == '__main__':
     from app import app
-    app.run_app(web.app)
