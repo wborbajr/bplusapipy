@@ -1,4 +1,6 @@
 from time import time
+import json
+import hashlib
 
 
 class Blockchain:
