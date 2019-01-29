@@ -5,7 +5,6 @@ aioHTTP Rest API
 from aiohttp import web
 
 import sys
-# sys.path.insert(0, '/blockchain')
 sys.path.append('../')
 from blockchain import Blockchain
 
@@ -19,7 +18,7 @@ async def handle(request):
     return web.Response(text=json.dumps(response_obj))
 
 
-def mine(request):
+async def mine(request):
 
     # Generate a globally unique address for this node
     node_identifier = str(uuid4()).replace('-', '')
@@ -50,7 +49,7 @@ def mine(request):
         'proof': block['proof'],
         'previous_hash': block['previous_hash'],
     }
-    return web.json_response(response), 200
+    return web.Response(text=json.dumps(response))
 
 
 async def new_transaction(request):
@@ -65,15 +64,19 @@ async def new_transaction(request):
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
     response = {'message': f'Transaction will be added to Block {index}'}
-    return jsonify(response), 201
+    return web.Response(text=json.dumps(response))
 
 
 async def full_chain(request):
+
+    # Instantiate the Blockchain
+    blockchain = Blockchain()
+
     response = {
         'chain': blockchain.chain,
         'length': len(blockchain.chain),
     }
-    return jsonify(response), 200
+    return web.Response(text=json.dumps(response))
 
 
 async def register_nodes(request):
@@ -90,10 +93,13 @@ async def register_nodes(request):
         'message': 'New nodes have been added',
         'total_nodes': list(blockchain.nodes),
     }
-    return jsonify(response), 201
+    return web.Response(text=json.dumps(response))
 
 
 async def consensus(request):
+    # Instantiate the Blockchain
+    blockchain = Blockchain()
+
     replaced = blockchain.resolve_conflicts()
 
     if replaced:
@@ -107,7 +113,7 @@ async def consensus(request):
             'chain': blockchain.chain
         }
 
-    return jsonify(response), 200
+    return web.Response(text=json.dumps(response))
 
 
 def init():

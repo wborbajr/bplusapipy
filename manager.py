@@ -2,6 +2,9 @@
 Manager
 """
 
+import sys
+sys.path.append('./')
 
-if __name__ == '__main__':
-    from app import app
+
+# if __name__ == '__main__':
+from app import app
